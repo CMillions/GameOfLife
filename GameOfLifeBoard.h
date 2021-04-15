@@ -5,6 +5,9 @@
  * Description: Board class for Conway's Game of Life.
  */
 
+#ifndef GAME_OF_LIFE_BOARD_H
+#define GAME_OF_LIFE_BOARD_H
+
 #include <vector>
 #include <algorithm>
 #include <stdlib.h>
@@ -228,3 +231,4 @@ private: // Member variables
 
 };
 
+#endif

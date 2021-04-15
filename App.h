@@ -1,4 +1,8 @@
+#ifndef APP_H
+#define APP_H
+
 #include <SFML/Graphics.hpp>
+#include <array>
 #include <memory>
 
 #include "GameOfLifeBoard.h"
@@ -31,9 +35,17 @@ private:
 	bool m_simulating;				 // Is the simulation running?
 	bool m_menuShowing;				 // Is the menu showing?
 
+	sf::RectangleShape m_menuRect;   // The outline rectangle to display menu information
+
+	std::unique_ptr
+		<sf::Font> m_font;			 // A unique pointer to a font
+	std::array<sf::Text, 2> m_text;  // An array to hold a few text objects
+
 private: // Private member functions
 
 	void init();
+	void initVertices();
+	void initMenu();
 	void loop();
 
 	void draw();
@@ -46,6 +58,7 @@ private: // Private member functions
 	sf::Vector2i convertMousePosToGridPos();
 
 	void updateCellVertices(unsigned int row, unsigned int col);
+	void updateAllCellVertices();
 
 public: // Public member functions
 
@@ -54,3 +67,4 @@ public: // Public member functions
 
 };
 
+#endif

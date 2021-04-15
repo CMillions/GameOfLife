@@ -18,12 +18,31 @@ App::App() : FPS(60u), m_rowLines(sf::Lines), m_columnLines(sf::Lines), m_cellVe
 	m_window->setFramerateLimit(FPS);
 	m_window->setVerticalSyncEnabled(false);
 
-	m_running = true;
+	// Load the font for the application
+	m_font = std::make_unique<sf::Font>();
+	m_font->loadFromFile("resources/fonts/arial.ttf");
+
+	for (auto& textObj : m_text)
+	{
+		textObj.setFont(*m_font);
+		textObj.setCharacterSize(16);
+		textObj.setFillColor(sf::Color::White);
+	}
+
+	m_running = true;     // the application is running by default
+	
+	m_simulating = false; // The simulation is paused by default
 }
 
 
 void App::init()
 {	
+	initVertices();
+	initMenu();
+}
+
+void App::initVertices()
+{
 	const sf::Color GRIDLINE_COLOR(120, 120, 120, 125);
 
 	float quadWidth = m_width / NUM_ROWS;
@@ -43,7 +62,7 @@ void App::init()
 	// of vertices
 	m_rowLines.resize(numHorizontalLinesNeeded);
 	m_columnLines.resize(numVerticalLinesNeeded);
-	
+
 
 	float xPos = 0, yPos = 0;
 
@@ -103,8 +122,28 @@ void App::init()
 
 		updateCellVertices(row, col);
 	}
+}
 
-	m_simulating = false; // The simulation is paused by default
+void App::initMenu()
+{
+	m_menuShowing = true; // show the menu by default
+
+	m_menuRect.setSize(sf::Vector2f(350.f, 300.f));
+	m_menuRect.setPosition(0, 0);
+	m_menuRect.setFillColor(sf::Color(64, 64, 64, 240));
+	m_menuRect.setOutlineColor(sf::Color::Green);
+	m_menuRect.setOutlineThickness(1.f);
+
+	m_text[0].setPosition(10, 10);
+	m_text[0].setString("Info & Controls");
+
+	m_text[1].setPosition(10, 90);
+	m_text[1].setString("Generation: " + std::to_string(m_board.age()) + ""\
+						"\n\nSPACE - Pause/unpause simulation"\
+						"\n\nR - Return board to generation 0"\
+						"\n\nC - Clear board"\
+						"\n\nESC - Hide/unhide menu"\
+						);
 }
 
 void App::loop()
@@ -120,14 +159,15 @@ void App::loop()
 			m_elapsedTime = 0.0f;
 
 			m_board.nextState();
-			
-			for (unsigned int row = 0; row < m_board.rows(); row++)
-			{
-				for (unsigned int col = 0; col < m_board.cols(); col++)
-				{
-					updateCellVertices(row, col);
-				}
-			}
+
+			m_text[1].setString("Generation: " + std::to_string(m_board.age()) + ""\
+				"\n\nSPACE - Pause/unpause simulation"\
+				"\n\nR - Return board to generation 0"\
+				"\n\nC - Clear board"\
+				"\n\nESC - Hide/unhide menu"\
+			);
+
+			updateAllCellVertices();
 		}
 		else if (!m_simulating && (m_board.age() == 0) && (m_elapsedTime >= UPDATE_TIME))
 		{
@@ -150,6 +190,13 @@ void App::draw()
 	m_window->draw(m_cellVertices);
 	m_window->draw(m_columnLines);
 	m_window->draw(m_rowLines);
+
+	if (m_menuShowing)
+	{
+		m_window->draw(m_menuRect);
+		m_window->draw(m_text[0]);
+		m_window->draw(m_text[1]);
+	}
 
 	m_window->display();
 }
@@ -200,6 +247,14 @@ void App::handleKeyPress(const sf::Event& ev)
 	case sf::Keyboard::R:			    // Pause and reset board to initial state
 		m_simulating = false;
 		m_board.reset();
+		m_text[1].setString("Generation: " + std::to_string(m_board.age()) + ""\
+			"\n\nSPACE - Pause/unpause simulation"\
+			"\n\nR - Return board to generation 0"\
+			"\n\nC - Clear board"\
+			"\n\nESC - Hide/unhide menu"\
+		);
+
+		updateAllCellVertices();
 		break;
 	}
 
@@ -252,6 +307,17 @@ void App::updateCellVertices(unsigned int row, unsigned int col)
 		}
 		else
 			m_cellVertices[i].color = sf::Color::Black;
+	}
+}
+
+void App::updateAllCellVertices()
+{
+	for (unsigned int row = 0; row < m_board.rows(); row++)
+	{
+		for (unsigned int col = 0; col < m_board.cols(); col++)
+		{
+			updateCellVertices(row, col);
+		}
 	}
 }
 
