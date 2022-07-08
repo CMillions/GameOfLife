@@ -10,6 +10,6 @@ A C++ implementation of Conway's Game of Life using SFML. Randomly generates a f
 - Any dead cell with EXACTLY three neighbors becomes a live cell
 
 ## Build Details
-SFML Version 2.5.1\
+SFML Version 2.5.1 64bit\
 Statically linked\
 Compiled in Visual Studio Community 2019
