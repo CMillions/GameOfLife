@@ -1,12 +1,3 @@
-/* File:   main.cpp
- * Author: Connor DeCamp
- * Date:   July 15, 2022
- * 
- * This program is an implementation of Conway's game of life. The board
- * is represented as a sparse matrix (DOK implementation) to allow for an
- * "infinite" board.
- */
-
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <map>
@@ -98,13 +89,20 @@ void conway(SparseMatrix& board, SparseMatrix& neighorMatrix) {
 	}
 }
 
+#include "App.h"
 
 int main() {
 
 	const unsigned int WIDTH = 800u;
 	const unsigned int HEIGHT = 600u;
 
+	App app(WIDTH, HEIGHT, "Game of Life");
+	app.setFramerateLimit(144);
+	app.start();
+	
+
 	sf::RenderWindow window({WIDTH, HEIGHT}, "SFML");
+	window.setFramerateLimit(144);
 	sf::View camera(sf::Vector2f(WIDTH / 2.f, HEIGHT / 2.f), sf::Vector2f(WIDTH, HEIGHT));
 
 	window.setView(camera);
