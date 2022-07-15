@@ -8,6 +8,9 @@ public:
 	void start();
 	void setFramerateLimit(unsigned fps);
 
+	sf::CircleShape circle;
+	float zoom;
+
 private:
 
 	const unsigned int WIDTH;
@@ -15,6 +18,9 @@ private:
 
 	sf::RenderWindow window;
 	sf::View camera;
+
+	sf::Vector2i previousMousePosition;
+	bool trackMouse;
 
 	void init();
 	void loop();
